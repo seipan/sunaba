@@ -15,14 +15,12 @@ def find_primes_in_range(start_end):
     start, end = start_end
     return [n for n in range(start, end + 1) if trial(n)]
 
-
-
 if __name__ == '__main__':
     execution_times = []
-    for num_workers in range(1, 15):
+    num_workers_list = []
+    for num_workers in range(1, 25):
         start = 2
         end = 100000
-        num_workers = num_workers
 
         chunk_size = (end - start) // num_workers
         ranges = [(start + i * chunk_size, start + (i + 1) * chunk_size - 1) for i in range(num_workers)]
@@ -38,11 +36,15 @@ if __name__ == '__main__':
         end_time = time.time()
 
         execution_times.append(end_time - start_time)
+        num_workers_list.append(num_workers)
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(range(1, 15), execution_times, marker='o')
-    plt.title("Execution Time vs Number of Workers (Range: 2 to 10,000)")
+    baseline_time = execution_times[0]
+    normalized_times = [t / baseline_time for t in execution_times]
+
+    plt.figure(figsize=(1, 25))
+    plt.plot(num_workers_list, normalized_times, marker='o')
+    plt.title("Relative Execution Time vs Number of Workers (Range: 2 to 100,000)")
     plt.xlabel("Number of Workers")
-    plt.ylabel("Execution Time (seconds)")
+    plt.ylabel("Relative Execution Time (Normalized to 1 Worker)")
     plt.grid(True)
     plt.show()
